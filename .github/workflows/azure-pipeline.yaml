@@ -26,7 +26,7 @@ jobs:
 
       - name: Check Pickle File Exists(Model file)
         run: |
-          if [ -f "outputs/fraud_detection_model.pkl" ]; then
+          if [ -f "outputs/fraud_detection.pkl" ]; then
             echo "Model file exists."
           else
             echo "Model file does not exist."
