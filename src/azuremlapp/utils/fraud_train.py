@@ -1,6 +1,7 @@
 import  os
 from dotenv import load_dotenv
 import pandas as pd
+import joblib
 env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 load_dotenv(env_path)
 def fraud_detection_train(file_path):
@@ -55,10 +56,30 @@ def fraud_detection_train(file_path):
     from sklearn.metrics import confusion_matrix
     cm = confusion_matrix(y_test, y_pred)
     print(f"Confusion Matrix: \n{cm}")
+    os.makedirs("outputs", exist_ok=True)
+
+    model_path = os.getenv('model_path')
+
+    artifact = {
+            "model": model,
+            "feature_columns": X.columns.tolist(),
+            "metrics": {
+                "accuracy": accuracy,
+                "f1_score": f1,
+                "precision": precision,
+                "recall": recall
+            }
+        }
+
+
+
+    joblib.dump(artifact, model_path)
+
+    print(f"\nModel saved to: {model_path}")
     return model
 if __name__ == "__main__":
     # Example usage
-    file_path = "azuremlapp/resources/fraud_transactions.csv"  # Ensure this environment variable is set in your .env file
+    file_path = file_path = "src/azuremlapp/resources/fraud_transactions.csv"  # Ensure this environment variable is set in your .env file
     if file_path:
         model = fraud_detection_train(file_path)
     else:
